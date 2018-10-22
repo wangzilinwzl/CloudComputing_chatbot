@@ -8,8 +8,7 @@
 // });
 
 
-var request = new XMLHttpRequest();
-var res="";
+
 
 var messages = [], //array that hold the record of each string in chat
   lastUserMessage = "", //keeps track of the most recent input string from the user
@@ -18,8 +17,60 @@ var messages = [], //array that hold the record of each string in chat
   talking = true; //when false the speach function doesn't work
 
 // //edit this function to change what the chatbot says
+
+var HttpClient = function() {
+    this.post = function(aUrl, aCallback) {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() { 
+            if (request.readyState == 4 && request.status == 200)
+                aCallback(request.responseText);
+        }
+        var postData = lastUserMessage;
+        request.open( "POST", aUrl, true );  
+        request.setRequestHeader('X-API-KEY', 'NU4mPqUV287jgvUO2zhDX4ITy6DQrKc49vfMW2MT');          
+        request.send( JSON.stringify(postData) );
+    }
+}
+
 function chatbotResponse() {
-  botMessage = res;
+  var request = new XMLHttpRequest();
+  //var res="";
+  request.open('POST', 'https://nkg23wc55i.execute-api.us-east-2.amazonaws.com/prod/rr',false);
+
+  request.setRequestHeader('X-API-KEY', 'NU4mPqUV287jgvUO2zhDX4ITy6DQrKc49vfMW2MT');
+
+  //var postData = {"messages" : lastUserMessage};
+  var postData = lastUserMessage;
+
+
+
+  // request.onreadystatechange = function () {
+  //   if (this.readyState == 4 && this.status == 200) {
+  //     // console.log('Status:', this.status);
+  //     // console.log('Headers:', this.getAllResponseHeaders());
+  //     //postData = {"messages" : lastUserMessage};
+  //    var res=JSON.parse(this.response)["message"];
+  //     botMessage = res;
+  //     botMessage =JSON.parse(this.response)["message"];
+  //     console.log("bottMessage:" + botMessage);
+  //     console.log(res);
+  //     console.log(lastUserMessage);
+  //     //console.log('Body:', JSON.stringify(this.response));
+  //     // console.log("response:"+JSON.stringif;y(response));
+  //   }
+  // };
+
+  request.send(JSON.stringify(postData));
+  botMessage = JSON.parse(request.responseText)["message"];
+  console.log("bottMessage:" + botMessage);
+  // var client = new HttpClient();
+  // client.post('https://nkg23wc55i.execute-api.us-east-2.amazonaws.com/prod/rr', function(response) {
+  //     // do something with response
+  //     console.log(JSON.parse(response)["message"];)
+  //     botMessage=JSON.parse(response)["message"];
+  // });
+
+  //botMessage = res;
   // talking = true;
   // botMessage = "I'm confused"; //the default message
 
@@ -69,30 +120,6 @@ function newEntry() {
   }
 }
 
-
-
-request.open('POST', 'https://nkg23wc55i.execute-api.us-east-2.amazonaws.com/prod/rr',true);
-
-request.setRequestHeader('X-API-KEY', 'NU4mPqUV287jgvUO2zhDX4ITy6DQrKc49vfMW2MT');
-
-var postData="";
-
-
-
-request.onreadystatechange = function () {
-  if (this.readyState == 4 && this.status == 200) {
-    // console.log('Status:', this.status);
-    // console.log('Headers:', this.getAllResponseHeaders());
-    postData = {"messages" : lastUserMessage};
-    res=JSON.parse(this.response)["message"];
-    console.log(res);
-    console.log(lastUserMessage);
-    //console.log('Body:', JSON.stringify(this.response));
-    // console.log("response:"+JSON.stringif;y(response));
-  }
-};
-
-request.send(JSON.stringify(postData));
 
 
 
